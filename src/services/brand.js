@@ -1,7 +1,7 @@
 const Brand = require('../models/brand');
 
 class BrandService {
-	async getAllBrands(getOnlyEnabledStore = true) {
+	async getAllBrands(getOnlyEnabledStore = false) {
 		return await Brand.query()
 			.skipUndefined()
 			.where('is_deleted', false)
@@ -12,7 +12,7 @@ class BrandService {
 				}
 			});
 	}
-	async getBrandById(id, getOnlyEnabledStore = true) {
+	async getBrandById(id, getOnlyEnabledStore = false) {
 		return await Brand.query()
 			.skipUndefined()
 			.where('id', id)
@@ -26,7 +26,16 @@ class BrandService {
 			.modifyEager('stores', builder => {
 				builder.where('is_operating', true);
 			})
-			.orderBy('id');
+			.first();
+	}
+	async createBrand(brand) {
+		return await Brand.query().insert(brand).returning('id');
+	}
+	async updateBrand(id, brand) {
+		return await Brand.query().patchAndFetchById(id, brand);
+	}
+	async deleteBrand(id) {
+		return await Brand.query().deleteById(id);
 	}
 }
 
