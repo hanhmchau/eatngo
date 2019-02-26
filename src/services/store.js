@@ -1,6 +1,6 @@
 const Store = require('../models/store');
 
-class BrandService {
+class StoreService {
 	async getStoresByBrand(id, getOnlyOperating = true) {
 		return await Store.query()
 			.skipUndefined()
@@ -31,4 +31,4 @@ class BrandService {
 	}
 }
 
-module.exports = BrandService;
+module.exports = StoreService;

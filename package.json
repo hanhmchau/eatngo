@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node .",
     "dev": "nodemon .",
+    "build": "pkg -t latest-linux-x64 -o ./app.dev ./index.js",
     "precommit": "lint-staged",
     "doc": "apidoc -i src/controllers/",
     "test": "exit 0"

@@ -29,6 +29,6 @@ app.use(cookieParser());
 app.use(compression());
 
 const router = require('./src/controllers');
-app.use(router);
+app.use('/api', router);
 
 app.listen(5000);
