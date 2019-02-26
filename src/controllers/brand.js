@@ -3,6 +3,12 @@ const router = express.Router();
 const BrandService = require('../services/brand');
 const brandService = new BrandService();
 
+const ERROR = {
+	NOT_FOUND: {
+		error: 'No brand with this id was found'
+	}
+};
+
 /**
  * @api {get} /brands/ Request list of brands
  * @apiName /brand/
@@ -71,9 +77,13 @@ router.get('/', async (req, res) => {
  * @apiUse InternalServerError
  */
 router.get('/:id', async (req, res) => {
-	const id = req.body.id;
+	const id = req.params.id;
 	const brand = await brandService.getBrandById(id);
-	res.json(brand);
+	if (brand) {
+		res.json(brand);
+	} else {
+		res.status(404).json(ERROR.NOT_FOUND);
+	}
 });
 
 /**
@@ -97,16 +107,45 @@ router.get('/:id', async (req, res) => {
  * @apiUse NotFoundError
  * @apiUse InternalServerError
  */
-router.post('/', (req, res, next) => {
-	res.statusCode(200);
+router.post('/', async (req, res) => {
+	const { name, description, creatorId, avatar } = { ...req.body };
+	const result = await brandService.createBrand({
+		name,
+		description,
+		creatorId,
+		avatar,
+		isDisabled: false,
+		isDeleted: false
+	});
+	res.json(result);
 });
 
-router.put('/:id', (req, res, next) => {
-	res.statusCode(200);
+router.put('/:id', async (req, res) => {
+	const id = req.params.id;
+	const { name, description, creatorId, avatar, isDisabled, isDeleted } = { ...req.body };
+	const result = await brandService.updateBrand(id, {
+		name,
+		description,
+		creatorId,
+		avatar,
+		isDisabled,
+		isDeleted
+	});
+	if (result) {
+		res.sendStatus(204);
+	} else {
+		res.status(404).json(ERROR.NOT_FOUND);
+	}
 });
 
-router.delete('/:id', (req, res, next) => {
-	res.statusCode(200);
+router.delete('/:id', async (req, res) => {
+	const id = req.params.id;
+	const result = await brandService.deleteBrand(id);
+	if (result) {
+		res.sendStatus(204);
+	} else {
+		res.status(404).json(ERROR.NOT_FOUND);
+	}
 });
 
 /**
@@ -134,7 +173,6 @@ router.delete('/:id', (req, res, next) => {
  * @apiUse InternalServerError
  */
 router.get('/:id/stores', (req, res, next) => {
-	res.statusCode(200);
 });
 
 /**
@@ -159,7 +197,6 @@ router.get('/:id/stores', (req, res, next) => {
  * @apiUse InternalServerError
  */
 router.get('/:id/foods', (req, res, next) => {
-	res.statusCode(200);
 });
 
 /**
@@ -184,7 +221,6 @@ router.get('/:id/foods', (req, res, next) => {
  * @apiUse InternalServerError
  */
 router.get('/:id/promotion-campaigns', (req, res, next) => {
-	res.statusCode(200);
 });
 
 // brand/1/store
