@@ -1,7 +1,11 @@
-const { Model } = require('objection');
+const { Model, snakeCaseMappers } = require('objection');
 const { getModelFile } = require('./helper');
 
 class OrderItem extends Model {
+	static get columnNameMappers() {
+		return snakeCaseMappers();
+	}
+
 	// Table name is the only required property.
 	static get tableName() {
 		return 'order_item';

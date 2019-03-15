@@ -1,7 +1,11 @@
-const { Model } = require('objection');
+const { Model, snakeCaseMappers } = require('objection');
 const { getModelFile } = require('./helper');
 
 class Store extends Model {
+	static get columnNameMappers() {
+		return snakeCaseMappers();
+	}
+
 	// Table name is the only required property.
 	static get tableName() {
 		return 'store';
@@ -12,9 +16,6 @@ class Store extends Model {
 		return {
 			brand: {
 				relation: Model.BelongsToOneRelation,
-				// The related model. This can be either a Model subclass constructor or an
-				// absolute file path to a module that exports one. We use the file path version
-				// here to prevent require loops.
 				modelClass: getModelFile('brand'),
 				join: {
 					from: 'store.brand_id',

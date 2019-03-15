@@ -22,13 +22,23 @@ app.use(cors());
 app.use(logger('dev'));
 app.use(helmet());
 app.use(express.json());
-app.use(express.urlencoded({
-	extended: false
-}));
+app.use(
+	express.urlencoded({
+		extended: false
+	})
+);
 app.use(cookieParser());
 app.use(compression());
 
-const router = require('./src/controllers');
+const di = require('./src/di');
+di.register(['src/services/**/*.js', 'src/controllers/**/*.js']);
+
+const loadKeys = require('./src/key');
+(async () => {
+	await loadKeys('./keys/public.pem', './keys/private.pem');
+})();
+
+const router = require('./src/routes');
 app.use('/api', router);
 
 app.listen(5000);

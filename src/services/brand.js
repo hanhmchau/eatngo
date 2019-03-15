@@ -1,11 +1,13 @@
 const Brand = require('../models/brand');
 
 class BrandService {
-	async getAllBrands(getOnlyEnabledStore = false) {
+	async getAllBrands(getOnlyEnabledStore = false, page = 1, pageSize = 10) {
 		return await Brand.query()
 			.skipUndefined()
 			.where('is_deleted', false)
 			.orderBy('id')
+			.offset((page - 1) * pageSize)
+			.limit(pageSize)
 			.modify(queryBuilder => {
 				if (getOnlyEnabledStore) {
 					queryBuilder.andWhere('is_disabled', getOnlyEnabledStore);
@@ -29,13 +31,19 @@ class BrandService {
 			.first();
 	}
 	async createBrand(brand) {
-		return await Brand.query().insert(brand).returning('id');
+		return await Brand.query()
+			.insert(brand)
+			.returning('id');
 	}
 	async updateBrand(id, brand) {
 		return await Brand.query().patchAndFetchById(id, brand);
 	}
 	async deleteBrand(id) {
-		return await Brand.query().deleteById(id);
+		return await Brand.query()
+			.patch({
+				isDeleted: true
+			})
+			.where('id', id);
 	}
 }
 

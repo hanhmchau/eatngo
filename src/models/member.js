@@ -10,6 +10,14 @@ class Member extends Model {
 	// This object defines the relations to other models.
 	static get relationMappings() {
 		return {
+			brandsCreated: {
+				relation: Model.HasManyRelation,
+				modelClass: getModelFile('brand'),
+				join: {
+					from: 'member.id',
+					to: 'brand.creator_id'
+				}
+			},
 			brandsManaged: {
 				relation: Model.ManyToManyRelation,
 				modelClass: getModelFile('brand'),

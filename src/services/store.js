@@ -1,6 +1,19 @@
 const Store = require('../models/store');
+const BaseService = require('./base');
 
-class StoreService {
+class StoreService extends BaseService {
+	async getStores(getOnlyOperating = true) {
+		return await Store.query()
+			.skipUndefined()
+			.where('is_deleted', false)
+			.modify(queryBuilder => {
+				if (getOnlyOperating) {
+					queryBuilder.andWhere('is_operating', true);
+				}
+			})
+			// .eager('brand')
+			.orderBy('id');
+	}
 	async getStoresByBrand(id, getOnlyOperating = true) {
 		return await Store.query()
 			.skipUndefined()
@@ -19,15 +32,27 @@ class StoreService {
 			.where('id', id)
 			.modify(queryBuilder => {
 				if (getOnlyOperating) {
-					queryBuilder.andWhere('is_operating', true);
+					queryBuilder.andWhere('store.is_operating', true);
 				}
 			})
-			.andWhere('is_deleted', false)
-			.eager('stores')
-			.modifyEager('stores', builder => {
-				builder.where('is_operating', true);
+			.andWhere('store.is_deleted', false)
+			.eager('employees')
+			.first();
+	}
+	async createStore(store) {
+		return await Store.query()
+			.insert(store)
+			.returning('id');
+	}
+	async updateStore(id, store) {
+		return await Store.query().patchAndFetchById(id, store);
+	}
+	async deleteStore(id) {
+		return await Store.query()
+			.patch({
+				isDeleted: true
 			})
-			.orderBy('id');
+			.where('id', id);
 	}
 }
 

@@ -22,14 +22,18 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "awilix": "^4.2.0",
+    "camelcase": "^5.2.0",
     "compression": "^1.7.3",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.5",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "helmet": "^3.15.0",
+    "jsonwebtoken": "^8.5.0",
     "knex": "^0.16.3",
     "morgan": "^1.9.1",
+    "node-dependency-injection": "^2.2.1",
     "objection": "^1.5.3",
     "pg": "^7.8.0"
   },
