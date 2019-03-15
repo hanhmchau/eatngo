@@ -1,10 +1,14 @@
-const { Model } = require('objection');
+const { Model, snakeCaseMappers } = require('objection');
 const { getModelFile } = require('./helper');
 
 class Member extends Model {
 	// Table name is the only required property.
 	static get tableName() {
 		return 'member';
+	}
+
+	static get columnNameMappers() {
+		return snakeCaseMappers();
 	}
 
 	// This object defines the relations to other models.
