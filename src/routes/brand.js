@@ -9,6 +9,7 @@ router.get('/:id', controller.getBrandById.bind(controller));
 router.post('/', controller.createBrand.bind(controller));
 router.put('/:id', controller.updateBrand.bind(controller));
 router.delete('/:id', controller.deleteBrand.bind(controller));
+router.get('/:id/foods', controller.getFoodsByBrand.bind(controller));
 router.get('/:id/stores', controller.getStoresByBrand.bind(controller));
 router.get('/:id/managers', controller.getManagersByBrand.bind(controller));
 router.get('/:id/order-items', controller.getOrdersByBrand.bind(controller));

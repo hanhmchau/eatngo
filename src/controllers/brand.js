@@ -5,11 +5,12 @@ const ERROR = {
 };
 
 class BrandController {
-	constructor({ brandService, storeService, memberService, orderItemService }) {
+	constructor({ brandService, storeService, memberService, orderItemService, foodService }) {
 		this.brandService = brandService;
 		this.storeService = storeService;
 		this.memberService = memberService;
 		this.orderItemService = orderItemService;
+		this.foodService = foodService;
 	}
 
 	async getBrands(req, res) {
@@ -86,6 +87,12 @@ class BrandController {
 		const brandId = req.params.id;
 		const managers = await this.memberService.getManagersByBrand(brandId);
 		res.json(managers);
+	}
+
+	async getFoodsByBrand(req, res) {
+		const brandId = req.params.id;
+		const foods = await this.foodService.getFoodsByBrand(brandId);
+		res.json(foods);
 	}
 }
 

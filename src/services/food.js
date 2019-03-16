@@ -2,8 +2,19 @@ const Brand = require('../models/brand');
 const Food = require('../models/food');
 
 class FoodService {
-	async getFoods(page = 1, pageSize = 10) {
-		return await Food.query()
+	groupByType(foods) {
+		const types = {};
+		foods.forEach(food => {
+			const type = food.type;
+			if (!types[type.name]) {
+				types[type.name] = [];
+			}
+			types[type.name].push(food);
+		});
+		return types;
+	}
+	async getFoods(page = 1, pageSize = 10, groupByType = true) {
+		const foods = await Food.query()
 			.where('food.is_deleted', false)
 			.andWhere('food.is_disabled', false)
 			.eager('[brand, images, type]')
@@ -15,8 +26,13 @@ class FoodService {
 			.andWhere('brand.is_disabled', false)
 			.offset((page - 1) * pageSize)
 			.limit(pageSize);
+		if (groupByType) {
+			return this.groupByType(foods);
+		} else {
+			return foods;
+		}
 	}
-	async getFoodsByBrand(id, getEnabledOnly = false, page = 1, pageSize = 10) {
+	async getFoodsByBrand(id, getEnabledOnly = false, page = 1, pageSize = 10, groupByType = true) {
 		const brand = await Brand.query()
 			.where('id', id)
 			.andWhere('is_deleted', false)
@@ -35,7 +51,12 @@ class FoodService {
 					.limit(pageSize);
 			})
 			.first();
-		return brand.foods;
+		const foods = brand.foods;
+		if (groupByType) {
+			return this.groupByType(foods);
+		} else {
+			return foods;
+		}
 	}
 	async getFoodById(id, getEnabledOnly = false) {
 		return await Food.query()
