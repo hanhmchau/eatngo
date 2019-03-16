@@ -6,7 +6,7 @@ class FoodService {
 		return await Food.query()
 			.where('food.is_deleted', false)
 			.andWhere('food.is_disabled', false)
-			.eager('[brand, images]')
+			.eager('[brand, images, type]')
 			.modifyEager('images', builder => {
 				builder.select('image');
 			})
@@ -20,7 +20,7 @@ class FoodService {
 		const brand = await Brand.query()
 			.where('id', id)
 			.andWhere('is_deleted', false)
-			.eager('foods.[images]')
+			.eager('foods.[images, type]')
 			.modifyEager('images', builder => {
 				builder.select('image');
 			})
@@ -46,7 +46,7 @@ class FoodService {
 					builder.andWhere('is_disabled', false);
 				}
 			})
-			.eager('[extras, images]')
+			.eager('[extras, images, type]')
 			.modifyEager('images', builder => {
 				builder.select('image');
 			})

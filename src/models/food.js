@@ -43,6 +43,14 @@ class Food extends Model {
 					from: 'food.id',
 					to: 'food_image.food_id'
 				}
+			},
+			type: {
+				relation: Model.HasOneRelation,
+				modelClass: getModelFile('food_type'),
+				join: {
+					from: 'food.type_id',
+					to: 'food_type.id'
+				}
 			}
 		};
 	}
