@@ -11,7 +11,14 @@ class FoodService {
 			}
 			types[type.name].push(food);
 		});
-		return types;
+		const typeArray = [];
+		for (const type in types) {
+			typeArray.push({
+				type,
+				foods: types[type]
+			});
+		}
+		return typeArray;
 	}
 	async getFoods(page = 1, pageSize = 10, groupByType = true) {
 		const foods = await Food.query()
