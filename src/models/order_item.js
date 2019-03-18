@@ -6,6 +6,14 @@ class OrderItem extends Model {
 		return snakeCaseMappers();
 	}
 
+	static get virtualAttributes() {
+		return ['totalPrice'];
+	}
+
+	get totalPrice() {
+		return this.orderDetails.reduce((prev, curr) => prev + curr.total, 0);
+	}
+
 	// Table name is the only required property.
 	static get tableName() {
 		return 'order_item';

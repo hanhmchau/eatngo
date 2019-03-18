@@ -90,7 +90,14 @@ class OrderItemService {
 			)
 			.first();
 	}
+	stringifyAttributes(order) {
+		order.orderDetails.forEach(detail => {
+			detail.attributes = JSON.stringify(detail.attributes);
+		});
+		return order;
+	}
 	async createOrder(order) {
+		order = this.stringifyAttributes(order);
 		const orderItem = await transaction(
 			OrderItem.knex(),
 			async trx => await OrderItem.query(trx).insertGraph(order)
@@ -99,6 +106,7 @@ class OrderItemService {
 	}
 	async updateOrder(id, order) {
 		order.id = id;
+		order = this.stringifyAttributes(order);
 		const orderItem = await transaction(
 			OrderItem.knex(),
 			async trx => await OrderItem.query(trx).upsertGraphAndFetch(order)

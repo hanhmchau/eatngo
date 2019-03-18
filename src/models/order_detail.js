@@ -5,6 +5,23 @@ class OrderDetail extends Model {
 	static get columnNameMappers() {
 		return snakeCaseMappers();
 	}
+	static get virtualAttributes() {
+		return ['total'];
+	}
+
+	get total() {
+		const attributes = this.attributes || [];
+		let totalExtra = attributes.reduce(
+			(prev, currentExtra) =>
+				prev +
+				currentExtra.options.reduce(
+					(prev, currentOption) => prev + currentOption.price,
+					0
+				),
+			0
+		);
+		return parseFloat(this.price) + totalExtra;
+	}
 
 	// Table name is the only required property.
 	static get tableName() {
