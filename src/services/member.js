@@ -48,9 +48,12 @@ class MemberService {
 		return memberDetails;
 	}
 	async login(member) {
-		const { id, phoneNumber } = { ...member };
-		const memberDetails = await Member.query().findById(id);
-		if (memberDetails && memberDetails.phoneNumber == phoneNumber) {
+		const { facebookId, phoneNumber } = { ...member };
+		const memberDetails = await Member.query()
+			.where('phone_number', phoneNumber)
+			.andWhere('facebook_id', facebookId)
+			.first();
+		if (memberDetails) {
 			memberDetails.token = await this.signToken(memberDetails.id);
 			return memberDetails;
 		}

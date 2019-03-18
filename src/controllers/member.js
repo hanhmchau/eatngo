@@ -28,19 +28,21 @@ class MemberController {
 	}
 
 	async register(req, res) {
-		const { email, phoneNumber } = { ...req.body };
+		const { email, name, phoneNumber, facebookId } = { ...req.body };
 		const result = await this.memberService.register({
 			email,
-			phoneNumber
+			phoneNumber,
+			name,
+			facebookId
 		});
 		res.json(result);
 	}
 
 	async login(req, res) {
-		const { id, phoneNumber } = { ...req.body };
-		const result = await this.memberService.login(id, {
-			id,
-			phoneNumber
+		const { phoneNumber, facebookId } = { ...req.body };
+		const result = await this.memberService.login({
+			phoneNumber,
+			facebookId
 		});
 		if (result) {
 			res.json(result);
