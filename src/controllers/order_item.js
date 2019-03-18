@@ -39,6 +39,7 @@ class OrderItemController {
 			speed,
 			service,
 			recommended,
+			comment,
 			orderDetails // { foodId, orderItemId, price, quantity, attributes}
 		} = { ...req.body };
 		const result = await this.orderItemService.createOrder({
@@ -49,6 +50,7 @@ class OrderItemController {
 			speed,
 			service,
 			recommended,
+			comment,
 			isCancelled: false,
 			date: new Date(),
 			orderDetails
@@ -67,6 +69,7 @@ class OrderItemController {
 			service,
 			recommended,
 			isCancelled,
+			comment,
 			orderDetails
 		} = { ...req.body };
 		const result = await this.orderItemService.updateOrder(id, {
@@ -78,6 +81,7 @@ class OrderItemController {
 			service,
 			recommended,
 			isCancelled,
+			comment,
 			orderDetails
 		});
 		if (result) {
