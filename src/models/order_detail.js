@@ -20,7 +20,7 @@ class OrderDetail extends Model {
 				),
 			0
 		);
-		return parseFloat(this.price) + totalExtra;
+		return parseFloat(this.price) * this.quantity + totalExtra;
 	}
 
 	// Table name is the only required property.
