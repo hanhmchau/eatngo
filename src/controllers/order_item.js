@@ -8,6 +8,7 @@ const ERROR = {
 		error: 'No order with this id was found'
 	}
 };
+const constants = require('../constants');
 
 class OrderItemController {
 	constructor({ orderItemService }) {
@@ -15,8 +16,14 @@ class OrderItemController {
 	}
 
 	async getOrderItems(req, res) {
-		const { isCancelled, after, before, page, pageSize } = { ...req.query };
-		const foods = await this.orderItemService.getOrders(isCancelled, after, before, page, pageSize);
+		const { status, after, before, page, pageSize } = { ...req.query };
+		const foods = await this.orderItemService.getOrders(
+			status,
+			after,
+			before,
+			page,
+			pageSize
+		);
 		res.json(foods);
 	}
 
@@ -42,6 +49,7 @@ class OrderItemController {
 			comment,
 			orderDetails // { foodId, orderItemId, price, quantity, attributes}
 		} = { ...req.body };
+		// make payment here
 		const result = await this.orderItemService.createOrder({
 			storeId,
 			memberId,
@@ -51,7 +59,7 @@ class OrderItemController {
 			service,
 			recommended,
 			comment,
-			isCancelled: false,
+			status: constants.ORDER_STATUS.PAID,
 			date: new Date(),
 			orderDetails
 		});
@@ -68,7 +76,7 @@ class OrderItemController {
 			speed,
 			service,
 			recommended,
-			isCancelled,
+			status,
 			comment,
 			orderDetails
 		} = { ...req.body };
@@ -80,12 +88,43 @@ class OrderItemController {
 			speed,
 			service,
 			recommended,
-			isCancelled,
+			status,
 			comment,
 			orderDetails
 		});
 		if (result) {
 			res.json(result);
+		} else {
+			res.status(404).json(ERROR.NOT_FOUND);
+		}
+	}
+
+	async patchOrder(req, res) {
+		const id = req.params.id;
+		const {
+			storeId,
+			memberId,
+			promotionCodeId,
+			attitude,
+			speed,
+			service,
+			recommended,
+			status,
+			comment
+		} = { ...req.body };
+		const result = await this.orderItemService.patchOrder(id, {
+			storeId,
+			memberId,
+			promotionCodeId,
+			attitude,
+			speed,
+			service,
+			recommended,
+			status,
+			comment
+		});
+		if (result) {
+			res.sendStatus(204);
 		} else {
 			res.status(404).json(ERROR.NOT_FOUND);
 		}

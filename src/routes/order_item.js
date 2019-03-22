@@ -8,6 +8,7 @@ router.get('/', controller.getOrderItems.bind(controller));
 router.get('/:id', controller.getOrderItemById.bind(controller));
 router.post('/', controller.createOrder.bind(controller));
 router.put('/:id', controller.updateOrder.bind(controller));
+router.patch('/:id', controller.patchOrder.bind(controller));
 
 // router.delete('/:id', controller.deleteOrder.bind(controller));
 
