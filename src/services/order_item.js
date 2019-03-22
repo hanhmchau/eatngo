@@ -9,6 +9,10 @@ const filterStatus = (builder, status) => {
 };
 
 class OrderItemService {
+	constructor({ stripeService, storeService }) {
+		this.stripeService = stripeService;
+		this.storeService = storeService;
+	}
 	async getOrders(
 		status = -1,
 		after = epoch,
@@ -53,7 +57,7 @@ class OrderItemService {
 		after = epoch,
 		before = new Date(),
 		page = 1,
-		pageSize = Number.MAX_SAFE_INTEGER 
+		pageSize = Number.MAX_SAFE_INTEGER
 	) {
 		const orderItems = await OrderItem.query()
 			.where('date', '>', after)
@@ -68,10 +72,6 @@ class OrderItemService {
 			.offset((page - 1) * pageSize)
 			.limit(pageSize);
 		return orderItems;
-		// orderItems.forEach(o => {
-		// 	console.log(o.store.brand);
-		// })
-		// return orderItems.filter(o => o.store.brand.id === brandId);
 	}
 	async getOrdersByStore(
 		storeId,
@@ -108,13 +108,38 @@ class OrderItemService {
 		});
 		return order;
 	}
-	async createOrder(order) {
-		order = this.stringifyAttributes(order);
-		const orderItem = await transaction(
-			OrderItem.knex(),
-			async trx => await OrderItem.query(trx).insertGraph(order)
-		);
-		return this.getOrderById(orderItem.id);
+	_getTotal(order) {
+		let total = 0;
+		order.orderDetails.forEach(od => {
+			total += od.quantity * od.price;
+			const attributes = od.attributes || [];
+			attributes.forEach(attr => {
+				attr.options.forEach(opt => (total += opt.price));
+			});
+		});
+		return total;
+	}
+	async createOrder(order, token) {
+		const total = this._getTotal(order);
+		try {
+			let charge;
+			if (token) {
+				const stripeRecipient = (await this.storeService.getStoreById(order.storeId)).brand.stripeId;
+				charge = await this.stripeService.charge(token, total, stripeRecipient);	
+			}
+			if (!token || token && charge && charge.status === 'succeeded') {
+				order = this.stringifyAttributes(order);
+				const orderItem = await transaction(
+					OrderItem.knex(),
+					async trx => await OrderItem.query(trx).insertGraph(order)
+				);
+				return this.getOrderById(orderItem.id);
+			} else {
+				return charge.status;
+			}
+		} catch (e) {
+			return { error: e.message };
+		}
 	}
 	async updateOrder(id, order) {
 		order.id = id;

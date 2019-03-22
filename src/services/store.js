@@ -36,7 +36,7 @@ class StoreService extends BaseService {
 				}
 			})
 			.andWhere('store.is_deleted', false)
-			.eager('employees')
+			.eager('[employees, brand]')
 			.first();
 	}
 	async createStore(store) {

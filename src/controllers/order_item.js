@@ -39,6 +39,7 @@ class OrderItemController {
 
 	async createOrder(req, res) {
 		const {
+			token,
 			storeId,
 			memberId,
 			promotionCodeId,
@@ -62,7 +63,7 @@ class OrderItemController {
 			status: constants.ORDER_STATUS.PAID,
 			date: new Date(),
 			orderDetails
-		});
+		}, token);
 		res.json(result);
 	}
 
