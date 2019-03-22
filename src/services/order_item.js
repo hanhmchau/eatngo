@@ -14,7 +14,7 @@ class OrderItemService {
 		after = epoch,
 		before = new Date(),
 		page = 1,
-		pageSize = Number.MAX_VALUE
+		pageSize = Number.MAX_SAFE_INTEGER
 	) {
 		return OrderItem.query()
 			.where('date', '>', after)
@@ -28,12 +28,12 @@ class OrderItemService {
 			.limit(pageSize);
 	}
 	async getOrdersByMember(
-		status = -1,
 		memberId,
+		status = -1,
 		after = epoch,
 		before = new Date(),
 		page = 1,
-		pageSize = Number.MAX_VALUE
+		pageSize = Number.MAX_SAFE_INTEGER
 	) {
 		return OrderItem.query()
 			.where('date', '>', after)
@@ -48,24 +48,30 @@ class OrderItemService {
 			.limit(pageSize);
 	}
 	async getOrdersByBrand(
-		status = -1,
 		brandId,
+		status = -1,
 		after = epoch,
 		before = new Date(),
 		page = 1,
-		pageSize = Number.MAX_VALUE
+		pageSize = Number.MAX_SAFE_INTEGER 
 	) {
-		return OrderItem.query()
+		const orderItems = await OrderItem.query()
 			.where('date', '>', after)
 			.andWhere('date', '<', before)
+			.joinRelation('store')
 			.andWhere('brand_id', brandId)
 			.modify(builder => filterStatus(builder, status))
-			.eager('[orderDetails.[food.[images]], store.[brand], member]')
+			.eager('[orderDetails.[food.[images]], store, member]')
 			.modifyEager('member', builder =>
 				builder.select(['id', 'email', 'name', 'address', 'phone_number'])
 			)
 			.offset((page - 1) * pageSize)
 			.limit(pageSize);
+		return orderItems;
+		// orderItems.forEach(o => {
+		// 	console.log(o.store.brand);
+		// })
+		// return orderItems.filter(o => o.store.brand.id === brandId);
 	}
 	async getOrdersByStore(
 		storeId,
@@ -73,7 +79,7 @@ class OrderItemService {
 		after = epoch,
 		before = new Date(),
 		page = 1,
-		pageSize = Number.MAX_VALUE
+		pageSize = Number.MAX_SAFE_INTEGER
 	) {
 		return OrderItem.query()
 			.where('date', '>', after)
