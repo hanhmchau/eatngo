@@ -1,7 +1,7 @@
 const Brand = require('../models/brand');
 
 class BrandService {
-	async getAllBrands(getOnlyEnabledStore = false, page = 1, pageSize = 10) {
+	async getAllBrands(getOnlyEnabledStore = false, page = 1, pageSize = Number.MAX_VALUE) {
 		return await Brand.query()
 			.skipUndefined()
 			.where('is_deleted', false)

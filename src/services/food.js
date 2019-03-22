@@ -20,7 +20,7 @@ class FoodService {
 		}
 		return typeArray;
 	}
-	async getFoods(page = 1, pageSize = 10, groupByType = true) {
+	async getFoods(page = 1, pageSize = Number.MAX_VALUE, groupByType = true) {
 		const foods = await Food.query()
 			.where('food.is_deleted', false)
 			.andWhere('food.is_disabled', false)
@@ -39,7 +39,7 @@ class FoodService {
 			return foods;
 		}
 	}
-	async getFoodsByBrand(id, getEnabledOnly = false, page = 1, pageSize = 10, groupByType = true) {
+	async getFoodsByBrand(id, getEnabledOnly = false, page = 1, pageSize = Number.MAX_VALUE, groupByType = true) {
 		const brand = await Brand.query()
 			.where('id', id)
 			.andWhere('is_deleted', false)
