@@ -12,6 +12,6 @@ router.delete('/:id', controller.deleteBrand.bind(controller));
 router.get('/:id/foods', controller.getFoodsByBrand.bind(controller));
 router.get('/:id/stores', controller.getStoresByBrand.bind(controller));
 router.get('/:id/managers', controller.getManagersByBrand.bind(controller));
-router.get('/:id/order-items', controller.getOrdersByBrand.bind(controller));
+router.get('/:id/orders', controller.getOrdersByBrand.bind(controller));
 
 module.exports = router;
