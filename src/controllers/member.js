@@ -12,9 +12,10 @@ const ERROR = {
 };
 
 class MemberController {
-	constructor({ memberService, orderItemService }) {
+	constructor({ memberService, orderItemService, brandService }) {
 		this.memberService = memberService;
 		this.orderItemService = orderItemService;
+		this.brandService = brandService;
 	}
 
 	async getMemberById(req, res) {
@@ -71,6 +72,16 @@ class MemberController {
 	async getOrdersByMember(req, res) {
 		const id = req.params.id;
 		const result = await this.orderItemService.getOrdersByMember(id);
+		if (result) {
+			res.json(result);
+		} else {
+			res.status(404).json(ERROR.NOT_FOUND);
+		}
+	}
+
+	async getBrandsByMember(req, res) {
+		const id = req.params.id;
+		const result = await this.brandService.getBrandsByMember(id);
 		if (result) {
 			res.json(result);
 		} else {

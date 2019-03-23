@@ -10,6 +10,7 @@ router.post('/authorize', controller.login.bind(controller));
 router.post('/', controller.register.bind(controller));
 router.put('/:id', controller.updateMember.bind(controller));
 router.get('/:id/orders', controller.getOrdersByMember.bind(controller));
+router.get('/:id/brands', controller.getBrandsByMember.bind(controller));
 
 // router.delete('/:id', controller.deleteOrder.bind(controller));
 

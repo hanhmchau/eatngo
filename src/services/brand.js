@@ -1,6 +1,15 @@
 const Brand = require('../models/brand');
 
 class BrandService {
+	async getBrandsByMember(memberId, page = 1, pageSize = Number.MAX_SAFE_INTEGER) {
+		return await Brand.query()
+			.skipUndefined()
+			.where('is_deleted', false)
+			.where('creator_id', memberId)
+			.orderBy('id')
+			.offset((page - 1) * pageSize)
+			.limit(pageSize);
+	}
 	async getAllBrands(getOnlyEnabledStore = false, page = 1, pageSize = Number.MAX_SAFE_INTEGER) {
 		return await Brand.query()
 			.skipUndefined()
