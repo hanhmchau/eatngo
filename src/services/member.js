@@ -52,6 +52,7 @@ class MemberService {
 		const memberDetails = await Member.query()
 			.where('phone_number', phoneNumber)
 			.andWhere('facebook_id', facebookId)
+			.eager('storesEmployed')
 			.first();
 		if (memberDetails) {
 			memberDetails.token = await this.signToken(memberDetails.id);
