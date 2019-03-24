@@ -64,7 +64,7 @@ class MemberController {
 			card
 		});
 		if (result) {
-			res.sendStatus(204);
+			res.json(result);
 		} else {
 			res.status(404).json(ERROR.NOT_FOUND);
 		}
