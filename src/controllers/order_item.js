@@ -125,7 +125,9 @@ class OrderItemController {
 			comment
 		});
 		if (result) {
-			res.sendStatus(204);
+			res.json({
+				status
+			});
 		} else {
 			res.status(404).json(ERROR.NOT_FOUND);
 		}
