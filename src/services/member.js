@@ -59,8 +59,9 @@ class MemberService {
 			return memberDetails;
 		}
 	}
-	async updateMember(member) {
-		return await Member.query().patchAndFetchById(member.id, member);
+	async updateMember(id, member) {
+		console.log(id, member);
+		return await Member.query().patchAndFetchById(id, member);
 	}
 }
 
