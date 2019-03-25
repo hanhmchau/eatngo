@@ -9,5 +9,7 @@ router.get('/:id', controller.getFoodById.bind(controller));
 router.post('/', controller.createFood.bind(controller));
 router.put('/:id', controller.updateFood.bind(controller));
 router.delete('/:id', controller.deleteFood.bind(controller));
+router.post('/:id/images', controller.addFoodImage.bind(controller));
+router.delete('/:id/images', controller.deleteFoodImage.bind(controller));
 
 module.exports = router;

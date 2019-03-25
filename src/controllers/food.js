@@ -44,7 +44,7 @@ class FoodController {
 			attributes,
 			brandId
 		} = { ...req.body };
-		const result = this.foodService.createFood({
+		const result = await this.foodService.createFood({
 			name,
 			price,
 			description,
@@ -58,7 +58,7 @@ class FoodController {
 			attributes: JSON.stringify(attributes),
 			brandId
 		});
-		res.json(result);	
+		res.json(result);
 	}
 
 	async updateFood(req, res) {
@@ -106,6 +106,18 @@ class FoodController {
 		} else {
 			res.status(404).json(ERROR.NOT_FOUND);
 		}	
+	}
+	async addFoodImage(req, res) {
+		const id = req.params.id;
+		const { image } = { ...req.body };
+		await this.foodService.addFoodImage(id, image);
+		res.sendStatus(204);
+	}
+	async deleteFoodImage(req, res) {
+		const id = req.params.id;
+		const { image } = { ...req.body };
+		await this.foodService.deleteFoodImage(id, image);
+		res.sendStatus(204);
 	}
 }
 
