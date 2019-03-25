@@ -11,8 +11,10 @@ class StoreService extends BaseService {
 					queryBuilder.andWhere('is_operating', true);
 				}
 			})
-			// .eager('brand')
-			.orderBy('id');
+			.eager('brand.[promotionCodes]')
+			.orderBy('id')
+			.offset((page - 1) * pageSize)
+			.limit(pageSize);
 	}
 	async getStoresByBrand(id, getOnlyOperating = true) {
 		return await Store.query()
@@ -36,7 +38,7 @@ class StoreService extends BaseService {
 				}
 			})
 			.andWhere('store.is_deleted', false)
-			.eager('[employees, brand]')
+			.eager('[employees, brand.[promotionCodes]]')
 			.first();
 	}
 	async createStore(store) {

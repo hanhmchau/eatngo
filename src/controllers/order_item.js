@@ -42,28 +42,31 @@ class OrderItemController {
 			token,
 			storeId,
 			memberId,
-			promotionCodeId,
+			promotionCode, // { id, code, percentageDiscount }
 			attitude,
 			speed,
 			service,
 			recommended,
 			comment,
-			orderDetails // { foodId, orderItemId, price, quantity, attributes}
+			orderDetails // { foodId, orderItemId, price, quantity, attributes, comment }
 		} = { ...req.body };
 		// make payment here
-		const result = await this.orderItemService.createOrder({
-			storeId,
-			memberId,
-			promotionCodeId,
-			attitude,
-			speed,
-			service,
-			recommended,
-			comment,
-			status: constants.ORDER_STATUS.PAID,
-			date: new Date(),
-			orderDetails
-		}, token);
+		const result = await this.orderItemService.createOrder(
+			{
+				storeId,
+				memberId,
+				promotionCode,
+				attitude,
+				speed,
+				service,
+				recommended,
+				comment,
+				status: constants.ORDER_STATUS.PAID,
+				date: new Date(),
+				orderDetails
+			},
+			token
+		);
 		res.json(result);
 	}
 
@@ -72,7 +75,7 @@ class OrderItemController {
 		const {
 			storeId,
 			memberId,
-			promotionCodeId,
+			promotionCode, // { id, code, percentageDiscount }
 			attitude,
 			speed,
 			service,
@@ -84,7 +87,7 @@ class OrderItemController {
 		const result = await this.orderItemService.updateOrder(id, {
 			storeId,
 			memberId,
-			promotionCodeId,
+			promotionCode,
 			attitude,
 			speed,
 			service,

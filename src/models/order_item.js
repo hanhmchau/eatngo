@@ -11,7 +11,13 @@ class OrderItem extends Model {
 	}
 
 	get totalPrice() {
-		return this.orderDetails.reduce((prev, curr) => prev + curr.total, 0);
+		const promotion = this.promotionCode;
+		const percentageDiscount = promotion ? promotion.percentageDiscount : 0;
+		return (
+			(this.orderDetails.reduce((prev, curr) => prev + curr.total, 0) *
+				(100 - percentageDiscount)) /
+			100
+		);
 	}
 
 	// Table name is the only required property.

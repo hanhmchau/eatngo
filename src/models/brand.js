@@ -7,7 +7,7 @@ class Brand extends Model {
 		// use snakeCaseMappers({ upperCase: true })
 		return snakeCaseMappers();
 	}
-	
+
 	// Table name is the only required property.
 	static get tableName() {
 		return 'brand';
@@ -55,12 +55,12 @@ class Brand extends Model {
 					to: 'food.brand_id'
 				}
 			},
-			promotionCampaigns: {
+			promotionCodes: {
 				relation: Model.HasManyRelation,
-				modelClass: getModelFile('promotion_campaign'),
+				modelClass: getModelFile('promotion_code'),
 				join: {
 					from: 'brand.id',
-					to: 'promotion_campaign.brand_id'
+					to: 'promotion_code.brand_id'
 				}
 			}
 		};

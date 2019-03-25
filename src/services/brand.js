@@ -28,7 +28,7 @@ class BrandService {
 			.skipUndefined()
 			.where('id', id)
 			.where('is_deleted', false)
-			.eager('[stores, foods.[images, type]]')
+			.eager('[stores, foods.[images, type, promotionCodes]]')
 			.modify(queryBuilder => {
 				if (getOnlyEnabledStore) {
 					queryBuilder.andWhere('is_disabled', getOnlyEnabledStore);
