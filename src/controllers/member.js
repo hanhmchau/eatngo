@@ -54,10 +54,11 @@ class MemberController {
 
 	async updateMember(req, res) {
 		const id = req.params.id;
-		const { email, phoneNumber, address, card } = {
+		const { email, phoneNumber, address, card, name } = {
 			...req.body
 		};
 		const result = await this.memberService.updateMember(id, {
+			name,
 			email,
 			phoneNumber,
 			address,
