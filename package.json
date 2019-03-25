@@ -36,7 +36,8 @@
     "node-dependency-injection": "^2.2.1",
     "objection": "^1.5.3",
     "pg": "^7.8.0",
-    "stripe": "^6.28.0"
+    "stripe": "^6.28.0",
+    "swagger-ui-express": "^4.0.2"
   },
   "devDependencies": {
     "eslint": "^5.12.0",

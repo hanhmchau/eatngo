@@ -41,4 +41,10 @@ const loadKeys = require('./src/key');
 const router = require('./src/routes');
 app.use('/api', router);
 
+/* SWAGGER CONFIG */
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+/* END SWAGGER CONFIG */
+
 app.listen(5000);
