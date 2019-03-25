@@ -7,5 +7,6 @@ router.use('/members', require('./member'));
 router.use('/foods', require('./food'));
 router.use('/order-items', require('./order_item'));
 router.use('/food-types', require('./food_type'));
+router.use('/promotion-codes', require('./promotion_code'));
 
 module.exports = router;

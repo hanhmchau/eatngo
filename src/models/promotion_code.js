@@ -20,7 +20,7 @@ class PromotionCampaign extends Model {
 				relation: Model.BelongsToOneRelation,
 				modelClass: getModelFile('brand'),
 				join: {
-					from: 'promotion_campaign.id',
+					from: 'promotion_code.id',
 					to: 'brand.id'
 				}
 			}
