@@ -2,7 +2,7 @@ const Store = require('../models/store');
 const BaseService = require('./base');
 
 class StoreService extends BaseService {
-	async getStores(getOnlyOperating = true) {
+	async getStores(page = 1, pageSize = 10, getOnlyOperating = true) {
 		return await Store.query()
 			.skipUndefined()
 			.where('is_deleted', false)
