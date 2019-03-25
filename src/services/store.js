@@ -12,6 +12,9 @@ class StoreService extends BaseService {
 				}
 			})
 			.eager('brand.[promotionCodes]')
+			.modifyEager('brand', builder =>
+				builder.modifyEager('promotionCodes', b => b.where('is_deleted', false))
+			)
 			.orderBy('id')
 			.offset((page - 1) * pageSize)
 			.limit(pageSize);
@@ -39,6 +42,9 @@ class StoreService extends BaseService {
 			})
 			.andWhere('store.is_deleted', false)
 			.eager('[employees, brand.[promotionCodes]]')
+			.modifyEager('brand', builder =>
+				builder.modifyEager('promotionCodes', b => b.where('is_deleted', false))
+			)
 			.first();
 	}
 	async createStore(store) {

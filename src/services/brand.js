@@ -1,7 +1,11 @@
 const Brand = require('../models/brand');
 
 class BrandService {
-	async getBrandsByMember(memberId, page = 1, pageSize = Number.MAX_SAFE_INTEGER) {
+	async getBrandsByMember(
+		memberId,
+		page = 1,
+		pageSize = Number.MAX_SAFE_INTEGER
+	) {
 		return await Brand.query()
 			.skipUndefined()
 			.where('is_deleted', false)
@@ -10,7 +14,11 @@ class BrandService {
 			.offset((page - 1) * pageSize)
 			.limit(pageSize);
 	}
-	async getAllBrands(getOnlyEnabledStore = false, page = 1, pageSize = Number.MAX_SAFE_INTEGER) {
+	async getAllBrands(
+		getOnlyEnabledStore = false,
+		page = 1,
+		pageSize = Number.MAX_SAFE_INTEGER
+	) {
 		return await Brand.query()
 			.skipUndefined()
 			.where('is_deleted', false)
@@ -28,7 +36,10 @@ class BrandService {
 			.skipUndefined()
 			.where('id', id)
 			.where('is_deleted', false)
-			.eager('[stores, foods.[images, type, promotionCodes]]')
+			.eager('[stores, foods.[images, type], promotionCodes]')
+			.modifyEager('promotionCodes', builder =>
+				builder.where('is_deleted', false)
+			)
 			.modify(queryBuilder => {
 				if (getOnlyEnabledStore) {
 					queryBuilder.andWhere('is_disabled', getOnlyEnabledStore);
