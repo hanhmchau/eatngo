@@ -51,7 +51,12 @@ class MemberService {
 		const { facebookId, phoneNumber } = { ...member };
 		const memberDetails = await Member.query()
 			.where('phone_number', phoneNumber)
-			.andWhere('facebook_id', facebookId)
+			.modify(builder => {
+				if (facebookId) {
+					builder.andWhere('facebook_id', facebookId);
+				}
+			})
+			// .andWhere('facebook_id', facebookId)
 			.eager('storesEmployedIn')
 			.first();
 		if (memberDetails) {

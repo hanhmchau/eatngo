@@ -26,7 +26,7 @@ class StoreController {
 	}
 
 	async createStore(req, res) {
-		const { name, address, brandId, phone, openingHour, closingHour } = {
+		const { name, address, brandId, phone, openingHour, closingHour, image } = {
 			...req.body
 		};
 		const result = await this.storeService.createStore({
@@ -35,14 +35,17 @@ class StoreController {
 			brandId,
 			phone,
 			openingHour,
-			closingHour
+			closingHour,
+			isOperating: true,
+			isDeleted: false,
+			image
 		});
 		res.json(result);
 	}
 
 	async updateStore(req, res) {
 		const id = req.params.id;
-		const { name, address, brandId, phone, openingHour, closingHour } = {
+		const { name, address, brandId, phone, openingHour, closingHour, image } = {
 			...req.body
 		};
 		const result = await this.storeService.updateStore(id, {
@@ -51,7 +54,8 @@ class StoreController {
 			brandId,
 			phone,
 			openingHour,
-			closingHour
+			closingHour,
+			image
 		});
 		if (result) {
 			res.sendStatus(204);
