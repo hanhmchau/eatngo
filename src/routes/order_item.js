@@ -10,6 +10,10 @@ router.post('/', controller.createOrder.bind(controller));
 router.put('/:id', controller.updateOrder.bind(controller));
 router.patch('/:id', controller.patchOrder.bind(controller));
 
+router.post('/:id/reviews', controller.createReview.bind(controller));
+router.put('/:id/reviews', controller.updateReview.bind(controller));
+router.delete('/:id/reviews', controller.deleteReview.bind(controller));
+
 // router.delete('/:id', controller.deleteOrder.bind(controller));
 
 module.exports = router;

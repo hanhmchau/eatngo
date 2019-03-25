@@ -135,6 +135,39 @@ class OrderItemController {
 			res.status(404).json(ERROR.NOT_FOUND);
 		}
 	}
+	async createReview(req, res) {
+		const orderId = req.params.id;
+		const { attitude, speed, service, recommended } = {
+			...req.body
+		};
+		const result = await this.orderItemService.createReview(orderId, {
+			attitude,
+			speed,
+			service,
+			recommended,
+			hasReview: true
+		});
+		res.json(result);
+	}
+	async updateReview(req, res) {
+		const orderId = req.params.id;
+		const { attitude, speed, service, recommended } = {
+			...req.body
+		};
+		const result = await this.orderItemService.updateReview(orderId, {
+			attitude,
+			speed,
+			service,
+			recommended,
+			hasReview: true
+		});
+		res.json(result);
+	}
+	async deleteReview(req, res) {
+		const orderId = req.params.id;
+		const result = await this.orderItemService.deleteReview(orderId);
+		res.json(result);
+	}
 }
 
 module.exports = OrderItemController;

@@ -24,7 +24,9 @@ class OrderItemService {
 			.where('date', '>', after)
 			.andWhere('date', '<', before)
 			.modify(builder => filterStatus(builder, status))
-			.eager('[orderDetails.[food.[images]], store.[brand], member]')
+			.eager(
+				'[orderDetails.[food.[images]], store.[brand], member, promotionCode]'
+			)
 			.modifyEager('member', builder =>
 				builder.select(['id', 'email', 'name', 'address', 'phone_number'])
 			)
@@ -44,7 +46,7 @@ class OrderItemService {
 			.andWhere('date', '<', before)
 			.andWhere('member_id', memberId)
 			.modify(builder => filterStatus(builder, status))
-			.eager('[orderDetails.[food.[images]], store.[brand]]')
+			.eager('[orderDetails.[food.[images]], store.[brand], promotionCode]')
 			.modifyEager('member', builder =>
 				builder.select(['id', 'email', 'name', 'address', 'phone_number'])
 			)
@@ -65,7 +67,7 @@ class OrderItemService {
 			.joinRelation('store')
 			.andWhere('brand_id', brandId)
 			.modify(builder => filterStatus(builder, status))
-			.eager('[orderDetails.[food.[images]], store, member]')
+			.eager('[orderDetails.[food.[images]], store, member, promotionCode]')
 			.modifyEager('member', builder =>
 				builder.select(['id', 'email', 'name', 'address', 'phone_number'])
 			)
@@ -96,7 +98,9 @@ class OrderItemService {
 	async getOrderById(id) {
 		return await OrderItem.query()
 			.where('id', id)
-			.eager('[orderDetails.[food.[images]], store.[brand], member]')
+			.eager(
+				'[orderDetails.[food.[images]], store.[brand], member, promotionCode]'
+			)
 			.modifyEager('member', builder =>
 				builder.select(['id', 'email', 'name', 'address', 'phone_number'])
 			)
@@ -110,6 +114,7 @@ class OrderItemService {
 	}
 	_getTotal(order) {
 		let total = 0;
+		const promotionCode = order.promotionCode;
 		order.orderDetails.forEach(od => {
 			total += od.quantity * od.price;
 			const attributes = od.attributes || [];
@@ -117,17 +122,22 @@ class OrderItemService {
 				attr.options.forEach(opt => (total += opt.price));
 			});
 		});
-		return total;
+		return (total * (100 - promotionCode)) / 100;
 	}
 	async createOrder(order, token) {
 		const total = this._getTotal(order);
 		try {
 			let charge;
 			if (token) {
-				const stripeRecipient = (await this.storeService.getStoreById(order.storeId)).brand.stripeId;
-				charge = await this.stripeService.charge(token, total, stripeRecipient);	
+				const stripeRecipient = (await this.storeService.getStoreById(
+					order.storeId
+				)).brand.stripeId;
+				charge = await this.stripeService.charge(token, total, stripeRecipient);
 			}
-			if (!token || token && charge && charge.status === 'succeeded') {
+			const promotion = order.promotionCode;
+			delete order.promotionCode;
+			order.promotionCodeId = promotion.id;
+			if (!token || (token && charge && charge.status === 'succeeded')) {
 				order = this.stringifyAttributes(order);
 				const orderItem = await transaction(
 					OrderItem.knex(),
@@ -144,6 +154,11 @@ class OrderItemService {
 	async updateOrder(id, order) {
 		order.id = id;
 		order = this.stringifyAttributes(order);
+
+		const promotion = order.promotionCode;
+		delete order.promotionCode;
+		order.promotionCodeId = promotion.id;
+
 		const orderItem = await transaction(
 			OrderItem.knex(),
 			async trx => await OrderItem.query(trx).upsertGraphAndFetch(order)
@@ -154,6 +169,33 @@ class OrderItemService {
 		return await OrderItem.query()
 			.patch(patch)
 			.where('id', id);
+	}
+	async createReview(orderId, review) {
+		return await OrderItem.query()
+			.patchAndFetchById(orderId, review)
+			.eager(
+				'[orderDetails.[food.[images]], store.[brand], member, promotionCode]'
+			);
+	}
+	async updateReview(orderId, review) {
+		return await OrderItem.query()
+			.patchAndFetchById(orderId, review)
+			.eager(
+				'[orderDetails.[food.[images]], store.[brand], member, promotionCode]'
+			);
+	}
+	async deleteReview(orderId) {
+		return await OrderItem.query()
+			.patchAndFetchById(orderId, {
+				attitude: null,
+				speed: null,
+				service: null,
+				recommended: null,
+				hasReview: false
+			})
+			.eager(
+				'[orderDetails.[food.[images]], store.[brand], member, promotionCode]'
+			);
 	}
 }
 

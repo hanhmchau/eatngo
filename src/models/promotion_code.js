@@ -10,7 +10,7 @@ class PromotionCampaign extends Model {
 
 	// Table name is the only required property.
 	static get tableName() {
-		return 'promotion_campaign';
+		return 'promotion_code';
 	}
 
 	// This object defines the relations to other models.
