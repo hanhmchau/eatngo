@@ -88,7 +88,7 @@ class OrderItemService {
 			.andWhere('date', '<', before)
 			.andWhere('store_id', storeId)
 			.modify(builder => filterStatus(builder, status))
-			.eager('[orderDetails.[food.[images]], member]')
+			.eager('[orderDetails.[food.[images]], member, promotionCode]')
 			.modifyEager('member', builder =>
 				builder.select(['id', 'email', 'name', 'address', 'phone_number'])
 			)

@@ -77,7 +77,7 @@ class StoreController {
 
 	async getOrderItemsByStore(req, res) {
 		const storeId = req.params.id;
-		const results = this.orderItemService.getOrdersByStore(storeId);
+		const results = await this.orderItemService.getOrdersByStore(storeId);
 		res.json(results);
 	}
 }
