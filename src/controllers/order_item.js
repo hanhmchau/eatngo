@@ -43,10 +43,6 @@ class OrderItemController {
 			storeId,
 			memberId,
 			promotionCode, // { id, code, percentageDiscount }
-			attitude,
-			speed,
-			service,
-			recommended,
 			comment,
 			orderDetails // { foodId, orderItemId, price, quantity, attributes, comment }
 		} = { ...req.body };
@@ -56,10 +52,6 @@ class OrderItemController {
 				storeId,
 				memberId,
 				promotionCode,
-				attitude,
-				speed,
-				service,
-				recommended,
 				comment,
 				status: constants.ORDER_STATUS.PAID,
 				date: new Date(),
@@ -80,10 +72,6 @@ class OrderItemController {
 			storeId,
 			memberId,
 			promotionCode, // { id, code, percentageDiscount }
-			attitude,
-			speed,
-			service,
-			recommended,
 			status,
 			comment,
 			orderDetails
@@ -92,10 +80,6 @@ class OrderItemController {
 			storeId,
 			memberId,
 			promotionCode,
-			attitude,
-			speed,
-			service,
-			recommended,
 			status,
 			comment,
 			orderDetails
@@ -109,25 +93,13 @@ class OrderItemController {
 
 	async patchOrder(req, res) {
 		const id = req.params.id;
-		const {
-			storeId,
-			memberId,
-			promotionCodeId,
-			attitude,
-			speed,
-			service,
-			recommended,
-			status,
-			comment
-		} = { ...req.body };
+		const { storeId, memberId, promotionCodeId, status, comment } = {
+			...req.body
+		};
 		const result = await this.orderItemService.patchOrder(id, {
 			storeId,
 			memberId,
 			promotionCodeId,
-			attitude,
-			speed,
-			service,
-			recommended,
 			status,
 			comment
 		});
@@ -141,28 +113,28 @@ class OrderItemController {
 	}
 	async createReview(req, res) {
 		const orderId = req.params.id;
-		const { attitude, speed, service, recommended } = {
+		const { staffAttitude, speed, quality, cleanliness } = {
 			...req.body
 		};
 		const result = await this.orderItemService.createReview(orderId, {
-			attitude,
+			staffAttitude,
 			speed,
-			service,
-			recommended,
+			quality,
+			cleanliness,
 			hasReview: true
 		});
 		res.json(result);
 	}
 	async updateReview(req, res) {
 		const orderId = req.params.id;
-		const { attitude, speed, service, recommended } = {
+		const { staffAttitude, speed, quality, cleanliness } = {
 			...req.body
 		};
 		const result = await this.orderItemService.updateReview(orderId, {
-			attitude,
+			staffAttitude,
 			speed,
-			service,
-			recommended,
+			quality,
+			cleanliness,
 			hasReview: true
 		});
 		res.json(result);
