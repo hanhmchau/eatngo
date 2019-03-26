@@ -191,10 +191,10 @@ class OrderItemService {
 	async deleteReview(orderId) {
 		return await OrderItem.query()
 			.patchAndFetchById(orderId, {
-				attitude: null,
+				staffAttitude: null,
 				speed: null,
-				service: null,
-				recommended: null,
+				quality: null,
+				cleanliness: null,
 				hasReview: false
 			})
 			.eager(
