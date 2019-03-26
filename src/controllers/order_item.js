@@ -67,7 +67,7 @@ class OrderItemController {
 			},
 			token
 		);
-		if (result.error) {
+		if (!result.error) {
 			res.json(result);
 		} else {
 			res.status(500).json(result);
