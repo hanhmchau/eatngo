@@ -134,9 +134,11 @@ class OrderItemService {
 				)).brand.stripeId;
 				charge = await this.stripeService.charge(token, total, stripeRecipient);
 			}
-			const promotion = order.promotionCode;
-			delete order.promotionCode;
-			order.promotionCodeId = promotion.id;
+			if (order.promotionCode) {
+				const promotion = order.promotionCode;
+				delete order.promotionCode;
+				order.promotionCodeId = promotion.id;
+			}
 			if (!token || (token && charge && charge.status === 'succeeded')) {
 				order = this.stringifyAttributes(order);
 				const orderItem = await transaction(
@@ -155,9 +157,11 @@ class OrderItemService {
 		order.id = id;
 		order = this.stringifyAttributes(order);
 
-		const promotion = order.promotionCode;
-		delete order.promotionCode;
-		order.promotionCodeId = promotion.id;
+		if (order.promotionCode) {
+			const promotion = order.promotionCode;
+			delete order.promotionCode;
+			order.promotionCodeId = promotion.id;
+		}
 
 		const orderItem = await transaction(
 			OrderItem.knex(),

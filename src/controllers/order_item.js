@@ -67,7 +67,11 @@ class OrderItemController {
 			},
 			token
 		);
-		res.json(result);
+		if (result.error) {
+			res.json(result);
+		} else {
+			res.status(500).json(result);
+		}
 	}
 
 	async updateOrder(req, res) {
