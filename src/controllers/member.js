@@ -54,7 +54,7 @@ class MemberController {
 
 	async updateMember(req, res) {
 		const id = req.params.id;
-		const { email, phoneNumber, address, card, name } = {
+		const { email, phoneNumber, address, card, name, avatar } = {
 			...req.body
 		};
 		const result = await this.memberService.updateMember(id, {
@@ -62,7 +62,8 @@ class MemberController {
 			email,
 			phoneNumber,
 			address,
-			card
+			card,
+			avatar
 		});
 		if (result) {
 			res.json(result);
