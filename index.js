@@ -47,4 +47,9 @@ const swaggerDocument = require('./swagger.json');
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 /* END SWAGGER CONFIG */
 
+/* FIREBASE CONFIG */
+const configureFirebase = require('./src/firebase');
+configureFirebase();
+/* END FIREBASE CONFIG */
+
 app.listen(5000);

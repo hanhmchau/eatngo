@@ -8,6 +8,12 @@ const verify = util.promisify(jwt.verify);
 const { raw, transaction } = require('objection');
 
 class MemberService {
+	async getEmployeesByStore(storeId) {
+		const store = await Store.query()
+			.findById(storeId)
+			.eager('employees');
+		return store.employees;
+	}
 	async getManagersByBrand(brandId) {
 		const brand = await Brand.query()
 			.where('id', brandId)

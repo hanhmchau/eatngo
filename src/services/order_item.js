@@ -9,9 +9,10 @@ const filterStatus = (builder, status) => {
 };
 
 class OrderItemService {
-	constructor({ stripeService, storeService }) {
+	constructor({ stripeService, storeService, messageService }) {
 		this.stripeService = stripeService;
 		this.storeService = storeService;
+		this.messageService = messageService;
 	}
 	async getOrders(
 		status = -1,
@@ -145,6 +146,7 @@ class OrderItemService {
 					OrderItem.knex(),
 					async trx => await OrderItem.query(trx).insertGraph(order)
 				);
+				await this.messageService.announceNewOrder(order.storeId);
 				return this.getOrderById(orderItem.id);
 			} else {
 				return charge.status;
@@ -170,9 +172,11 @@ class OrderItemService {
 		return this.getOrderById(orderItem.id);
 	}
 	async patchOrder(id, patch) {
-		return await OrderItem.query()
-			.patch(patch)
-			.where('id', id);
+		const result = await OrderItem.query()
+			.patchAndFetchById(id, patch);
+
+		this.messageService.announceOrderStatus(result);
+		return result;
 	}
 	async createReview(orderId, review) {
 		return await OrderItem.query()
