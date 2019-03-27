@@ -1,5 +1,6 @@
 const Store = require('../models/store');
 const BaseService = require('./base');
+const { raw } = require('objection');
 
 class StoreService extends BaseService {
 	async getStores(
@@ -19,8 +20,8 @@ class StoreService extends BaseService {
 				}
 				if (search) {
 					queryBuilder
-						.where('name', 'like', `%${search}%`)
-						.orWhere('brand.name', 'like', `%${search}%`);
+						.where(raw(`LOWER(name) like '%${search.toLowerCase()}%'`))
+						.orWhereIn('brand_id', raw(`SELECT id FROM brand WHERE LOWER(name) LIKE '%${search.toLowerCase()}%'`));
 				}
 				if (filterCuisine) {
 					queryBuilder.mergeEager('brand.[foods]');
@@ -31,11 +32,10 @@ class StoreService extends BaseService {
 					b.where('promotion_code.is_deleted', false)
 				)
 			)
-			.orderBy('id')
-			.offset((page - 1) * pageSize)
-			.limit(pageSize);
+			.orderBy('id');
+		let filteredStores = stores;
 		if (filterCuisine) {
-			const filteredStores = stores.filter(store => {
+			filteredStores = stores.filter(store => {
 				if (store.brand) {
 					const foods = store.brand.foods;
 					const hasCuisine = foods.reduce(
@@ -52,9 +52,9 @@ class StoreService extends BaseService {
 				}
 			});
 			return filteredStores;
-		} else {
-			return stores;
 		}
+		const offset = (page - 1) * pageSize;
+		return filteredStores.slice(offset, offset + pageSize);
 	}
 	async getStoresByBrand(id, getOnlyOperating = true) {
 		return await Store.query()
