@@ -51,7 +51,6 @@ class StoreService extends BaseService {
 					delete store.brand.foods;
 				}
 			});
-			return filteredStores;
 		}
 		const offset = (page - 1) * pageSize;
 		return filteredStores.slice(offset, offset + pageSize);
