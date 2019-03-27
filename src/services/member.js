@@ -50,7 +50,7 @@ class MemberService {
 		return memberDetails;
 	}
 	async login(member) {
-		const { facebookId, phoneNumber } = { ...member };
+		const { facebookId, phoneNumber, deviceToken } = { ...member };
 		const memberDetails = await Member.query()
 			.where('phone_number', phoneNumber)
 			.modify(builder => {
@@ -74,6 +74,13 @@ class MemberService {
 				store.activeOrderCount = res ? parseInt(res.count) : 0;
 			});
 
+			await Member.query()
+				.patch({
+					deviceToken
+				})
+				.where('id', memberDetails.id);
+
+			memberDetails.deviceToken = deviceToken;
 			memberDetails.token = await this.signToken(memberDetails.id);
 			return memberDetails;
 		}
