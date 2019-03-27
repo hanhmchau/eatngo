@@ -11,8 +11,8 @@ class StoreController {
 	}
 
 	async getStores(req, res) {
-		const { page, pageSize } = { ...req.query };
-		const stores = await this.storeService.getStores(page, pageSize);
+		const { page, pageSize, search, filterCuisine } = { ...req.query };
+		const stores = await this.storeService.getStores(page, pageSize, search, filterCuisine);
 		res.json(stores);
 	}
 
