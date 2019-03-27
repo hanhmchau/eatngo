@@ -53,7 +53,6 @@ class StoreService extends BaseService {
 			});
 		}
 		const offset = (page - 1) * pageSize;
-		console.log('test', filteredStores.length, offset, offset + pageSize);
 		return filteredStores.slice(offset, offset + pageSize);
 	}
 	async getStoresByBrand(id, getOnlyOperating = true) {

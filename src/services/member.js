@@ -62,17 +62,18 @@ class MemberService {
 			.eager('storesEmployedIn')
 			.first();
 
-		const knex = Member.knex();
-		const result = await knex.raw(
-			'SELECT store_id, COUNT(*) FROM order_item WHERE status = 0 GROUP BY store_id'
-		);
-		memberDetails.storesEmployedIn.forEach(store => {
-			const res = result.rows.filter(r => {
-				return r.store_id === store.id;
-			})[0];
-			store.activeOrderCount = res ? parseInt(res.count) : 0;
-		});
 		if (memberDetails) {
+			const knex = Member.knex();
+			const result = await knex.raw(
+				'SELECT store_id, COUNT(*) FROM order_item WHERE status = 0 GROUP BY store_id'
+			);
+			memberDetails.storesEmployedIn.forEach(store => {
+				const res = result.rows.filter(r => {
+					return r.store_id === store.id;
+				})[0];
+				store.activeOrderCount = res ? parseInt(res.count) : 0;
+			});
+
 			memberDetails.token = await this.signToken(memberDetails.id);
 			return memberDetails;
 		}
