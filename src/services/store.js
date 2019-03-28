@@ -77,7 +77,7 @@ class StoreService extends BaseService {
 		return filteredStores.slice(offset, offset + pageSize);
 	}
 	async getStoresByBrand(id, getOnlyOperating = true) {
-		return await Store.query()
+		const stores = await Store.query()
 			.skipUndefined()
 			.where('brand_id', id)
 			.andWhere('is_deleted', false)
@@ -92,9 +92,13 @@ class StoreService extends BaseService {
 				);
 			})
 			.orderBy('id');
+		stores.forEach(store => {
+			store.brandId = store.brand && store.brand.id;
+		});
+		return stores;
 	}
 	async getStoreById(id, getOnlyOperating = true) {
-		return await Store.query()
+		const store = await Store.query()
 			.skipUndefined()
 			.where('id', id)
 			.modify(queryBuilder => {
@@ -113,6 +117,10 @@ class StoreService extends BaseService {
 				builder.modifyEager('promotionCodes', b => b.where('is_deleted', false))
 			)
 			.first();
+		if (store) {
+			store.brandId = store.brand && store.brand.id;
+			return store;
+		}
 	}
 	async createStore(store) {
 		return await Store.query()
