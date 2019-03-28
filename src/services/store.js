@@ -34,7 +34,7 @@ class StoreService extends BaseService {
 				}
 				queryBuilder.select(
 					raw(
-						'ST_X(location::geometry) as latitude, ST_Y(location::geometry) as longitude'
+						'*, ST_X(location::geometry) as latitude, ST_Y(location::geometry) as longitude'
 					)
 				);
 				const { longitude, latitude } = { ...currentLocation };
@@ -82,6 +82,11 @@ class StoreService extends BaseService {
 				if (getOnlyOperating) {
 					queryBuilder.andWhere('is_operating', true);
 				}
+				queryBuilder.select(
+					raw(
+						'*, ST_X(location::geometry) as latitude, ST_Y(location::geometry) as longitude'
+					)
+				);
 			})
 			.orderBy('id');
 	}
@@ -93,6 +98,11 @@ class StoreService extends BaseService {
 				if (getOnlyOperating) {
 					queryBuilder.andWhere('store.is_operating', true);
 				}
+				queryBuilder.select(
+					raw(
+						'*, ST_X(location::geometry) as latitude, ST_Y(location::geometry) as longitude'
+					)
+				);
 			})
 			.andWhere('store.is_deleted', false)
 			.eager('[employees, brand.[promotionCodes]]')
