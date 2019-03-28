@@ -34,7 +34,7 @@ class StoreService extends BaseService {
 				}
 				queryBuilder.select(
 					raw(
-						'*, ST_X(location::geometry) as latitude, ST_Y(location::geometry) as longitude'
+						'*, ST_X(location::geometry) as longitude, ST_Y(location::geometry) as latitude'
 					)
 				);
 				const { longitude, latitude } = { ...currentLocation };
@@ -87,7 +87,7 @@ class StoreService extends BaseService {
 				}
 				queryBuilder.select(
 					raw(
-						'*, ST_X(location::geometry) as latitude, ST_Y(location::geometry) as longitude'
+						'*, ST_X(location::geometry) as longitude, ST_Y(location::geometry) as latitude'
 					)
 				);
 			})
@@ -107,7 +107,7 @@ class StoreService extends BaseService {
 				}
 				queryBuilder.select(
 					raw(
-						'*, ST_X(location::geometry) as latitude, ST_Y(location::geometry) as longitude'
+						'*, ST_X(location::geometry) as longitude, ST_Y(location::geometry) as latitude'
 					)
 				);
 			})
