@@ -8,7 +8,8 @@ class StoreService extends BaseService {
 		pageSize = 10,
 		search = '',
 		filterCuisine = 0,
-		getOnlyOperating = true
+		getOnlyOperating = true,
+		currentLocation
 	) {
 		const stores = await Store.query()
 			.skipUndefined()
@@ -21,18 +22,35 @@ class StoreService extends BaseService {
 				if (search) {
 					queryBuilder
 						.where(raw(`LOWER(name) like '%${search.toLowerCase()}%'`))
-						.orWhereIn('brand_id', raw(`SELECT id FROM brand WHERE LOWER(name) LIKE '%${search.toLowerCase()}%'`));
+						.orWhereIn(
+							'brand_id',
+							raw(
+								`SELECT id FROM brand WHERE LOWER(name) LIKE '%${search.toLowerCase()}%'`
+							)
+						);
 				}
 				if (filterCuisine) {
 					queryBuilder.mergeEager('brand.[foods]');
+				}
+				queryBuilder.select(
+					raw(
+						'ST_X(location::geometry) as latitude, ST_Y(location::geometry) as longitude'
+					)
+				);
+				const { longitude, latitude } = { ...currentLocation };
+				if (longitude && latitude) {
+					queryBuilder.orderByRaw(
+						`ST_Distance((SELECT ST_GeographyFromText('SRID=4326;POINT(${longitude} ${latitude})')), location), id`
+					);
+				} else {
+					queryBuilder.orderBy('id');
 				}
 			})
 			.modifyEager('brand', builder =>
 				builder.modifyEager('promotionCodes', b =>
 					b.where('promotion_code.is_deleted', false)
 				)
-			)
-			.orderBy('id');
+			);
 		let filteredStores = stores;
 		if (filterCuisine) {
 			filteredStores = stores.filter(store => {
