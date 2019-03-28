@@ -27,7 +27,7 @@ class MemberService {
 		return await Member.query()
 			.skipUndefined()
 			.where('id', id)
-			.select('id', 'email', 'name', 'address', 'gender', 'phone_number')
+			.select('id', 'email', 'name', 'address', 'gender', 'phone_number', 'device_token')
 			.eager('[storesEmployedIn, brandsManaged]')
 			.modifyEager('storesEmployedIn', builder => {
 				builder.where('is_deleted', false);

@@ -15,13 +15,14 @@ class MessageService {
 			token
 		});
 	}
-	async announceNewOrder(storeId) {
+	async announceNewOrder(storeId, orderId) {
 		const recipients = await this.memberService.getEmployeesByStore(storeId);
 		const tokens = recipients.map(r => r.deviceToken).filter(r => !!r);
 
 		admin.messaging().sendMulticast({
 			data: {
-				type: 'HAS_NEW_ORDER'
+				type: 'HAS_NEW_ORDER',
+				orderId: orderId.toString()
 			},
 			tokens
 		});

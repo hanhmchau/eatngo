@@ -146,7 +146,7 @@ class OrderItemService {
 					OrderItem.knex(),
 					async trx => await OrderItem.query(trx).insertGraph(order)
 				);
-				await this.messageService.announceNewOrder(order.storeId);
+				await this.messageService.announceNewOrder(order.storeId, orderItem.id);
 				return this.getOrderById(orderItem.id);
 			} else {
 				return charge.status;
