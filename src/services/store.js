@@ -51,6 +51,9 @@ class StoreService extends BaseService {
 					b.where('promotion_code.is_deleted', false)
 				)
 			);
+		stores.forEach(store => {
+			store.brandId = store.brand && store.brand.id;
+		});
 		let filteredStores = stores;
 		if (filterCuisine) {
 			filteredStores = stores.filter(store => {
