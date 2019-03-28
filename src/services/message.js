@@ -7,6 +7,14 @@ class MessageService {
 	constructor({ memberService }) {
 		this.memberService = memberService;
 	}
+	async message(token, data = 'mock') {
+		admin.messaging().send({
+			data: {
+				data
+			},
+			token
+		});
+	}
 	async announceNewOrder(storeId) {
 		const recipients = await this.memberService.getEmployeesByStore(storeId);
 		const tokens = recipients.map(r => r.deviceToken).filter(r => !!r);
