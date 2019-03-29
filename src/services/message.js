@@ -19,13 +19,15 @@ class MessageService {
 		const recipients = await this.memberService.getEmployeesByStore(storeId);
 		const tokens = recipients.map(r => r.deviceToken).filter(r => !!r);
 
-		admin.messaging().sendMulticast({
-			data: {
-				type: 'HAS_NEW_ORDER',
-				orderId: orderId.toString()
-			},
-			tokens
-		});
+		if (tokens.length) {
+			admin.messaging().sendMulticast({
+				data: {
+					type: 'HAS_NEW_ORDER',
+					orderId: orderId.toString()
+				},
+				tokens
+			});
+		}
 	}
 	_getStatusType(status) {
 		switch (status) {
